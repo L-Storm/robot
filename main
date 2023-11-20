@@ -1,0 +1,72 @@
+// TB6612FNG Driver Board Sample board
+//
+// Author: Ben Taylor
+// University of Sheffield
+// Date: September 2021
+
+// Set pin stuff
+#define rightForwardPin 7 //A1 
+#define rightReversePin 9 //A2 
+#define leftForwardPin 11 //B1 
+#define leftReversePin 12 //B2 
+#define leftDrivePin 6  // left drive PIN PWMB
+#define rightDrivePin 5 // right drive PIN PWMA
+#define truePin 10       // pin for true value in DC motor control (standby)
+
+
+void setup()
+{
+  // Assign the digital I/O pin directions
+  pinMode(truePin, OUTPUT);
+  pinMode(leftForwardPin, OUTPUT);
+  pinMode(rightReversePin, OUTPUT); 
+  pinMode(rightForwardPin, OUTPUT);
+  pinMode(rightReversePin, OUTPUT);
+  pinMode(leftDrivePin, OUTPUT);
+  pinMode(rightDrivePin, OUTPUT);
+
+  // Initialize the serial port
+  Serial.begin(9600);
+
+  // Drive the standby pin high to enable the output and the true part of the TF values. 
+  digitalWrite(truePin, HIGH);
+}
+
+void loop()
+{
+  setMotor(50, true, false); // 255 max pin val. leftmotor is false forwards is true 
+  setMotor(50, false, true);
+
+  // Wait 300ms
+  delay(300);
+}
+
+void setMotor(int pwmVal, bool leftMotor, bool forwards)
+{
+  // setMotor sets the specific pwmVal into a specific motor. 
+  // pwmVal max 255.
+  // define if left or right wheel 
+  if (forwards && leftMotor) {
+    digitalWrite(leftForwardPin, HIGH);
+    digitalWrite(leftReversePin, LOW);
+  } else if (forwards && !leftMotor) {
+    digitalWrite(rightForwardPin, HIGH);
+    digitalWrite(rightReversePin, LOW);
+  } else if (!forwards && leftMotor) {
+    digitalWrite(leftForwardPin, LOW);
+    digitalWrite(leftReversePin, HIGH);
+  } else if (!forwards && !leftMotor) {
+    digitalWrite(rightForwardPin, LOW);
+    digitalWrite(rightReversePin, HIGH);
+  }
+  int motor; 
+  if (leftMotor)
+  {
+    motor = leftDrivePin;
+  } else {
+    motor = rightDrivePin;
+  }
+
+
+  analogWrite(motor, pwmVal); // set motor speed 
+}
