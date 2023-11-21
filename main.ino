@@ -1,10 +1,4 @@
-// TB6612FNG Driver Board Sample board
-//
-// Author: Ben Taylor
-// University of Sheffield
-// Date: September 2021
 
-//class for storing all globals cause its good practise
 //ONLY USE BYTE FOR PINS AND NOTHING ELSE
 class Globals{
   
@@ -43,8 +37,8 @@ void setup()
 
 void loop()
 {
-  setMotor(50, true, false); // 255 max pin val. leftmotor is false forward is true 
-  setMotor(50, false, true);
+  setMotor(50, true, true); // 255 max pin val. leftmotor is false forward is true 
+  //setMotor(50, false, true);
   Serial.println("Compiled bitch");
   // Wait 300ms
   delay(300);
