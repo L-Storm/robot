@@ -1,10 +1,3 @@
-// TB6612FNG Driver Board Sample board
-//
-// Author: Ben Taylor
-// University of Sheffield
-// Date: September 2021
-
-//class for storing all globals cause its good practise
 //ONLY USE BYTE FOR PINS AND NOTHING ELSE
 class Globals{
   
