@@ -1,3 +1,10 @@
+// TB6612FNG Driver Board Sample board
+//
+// Author: Ben Taylor
+// University of Sheffield
+// Date: September 2021
+
+//class for storing all globals cause its good practise
 //ONLY USE BYTE FOR PINS AND NOTHING ELSE
 class Globals{
   
@@ -87,4 +94,25 @@ void setMotor(int pwmVal, bool leftMotor, bool forward)
 
 
   analogWrite(motor, pwmVal); // set motor speed 
+}
+
+void rotate(int speed, long time, char direction) {
+  bool left;
+  unsigned long currentMillis = millis();
+  static unsigned long previousMillis = 0; // Make previousMillis static to retain its value between function calls
+
+  if (direction == 'L') {
+    left = true;
+  } else if (direction == 'R') {
+    left = false;
+  }
+
+  // turn
+  setMotor(speed, left, true);
+  setMotor(speed, !left, false);
+  if (currentMillis - previousMillis > time) {
+    previousMillis = currentMillis; // Doesn't use delay
+  }
+  setMotor(0, true, true);
+  setMotor(0, false, false);
 }
