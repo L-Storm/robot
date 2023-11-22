@@ -1,17 +1,24 @@
+// TB6612FNG Driver Board Sample board
+//
+// Author: Ben Taylor
+// University of Sheffield
+// Date: September 2021
 
+//class for storing all globals cause its good practise
 //ONLY USE BYTE FOR PINS AND NOTHING ELSE
 class Globals{
   
   public:
     
     //propulsion and motor pins - 
-      byte rightFrontPin = 7; //A1 
-      byte rightReversePin = 9; //A2 
-      byte leftFrontPin = 11; //B1 
-      byte leftReversePin = 12; //B2 
-      byte leftDrivePin = 6;  // left drive PIN PWMB
-      byte rightDrivePin = 5; // right drive PIN PWMA
-      byte truePin = 10;       // pin for true value in DC motor control (standby)
+      const byte rightFrontPin = 7; //A1 
+      const byte rightReversePin = 9; //A2 
+      const byte leftFrontPin = 11; //B1 
+      const byte leftReversePin = 12; //B2 
+      const byte leftDrivePin = 6;  // left drive PIN PWMB
+      const byte rightDrivePin = 5; // right drive PIN PWMA
+      const byte truePin = 10;       // pin for true value in DC motor control (standby)
+      const float corrFactor = 1.07;
 
       
 };
@@ -37,11 +44,23 @@ void setup()
 
 void loop()
 {
-  setMotor(50, true, true); // 255 max pin val. leftmotor is false forward is true 
-  //setMotor(50, false, true);
-  Serial.println("Compiled bitch");
+
+  setMotor(150, true, false); // 255 max pin val. leftmotor is false forward is true 
+  setMotor(150, false, true);
+  delay(640);
+  setMotor(0, true, false); // 255 max pin val. leftmotor is false forward is true 
+  setMotor(0, false, true);
+  delay(2000);
+  setMotor(150, true, true); // 255 max pin val. leftmotor is false forward is true 
+  setMotor(150, false, true);
+  delay(2000);
+  setMotor(0, true, false); // 255 max pin val. leftmotor is false forward is true 
+  setMotor(0, false, true);
+
+
+
+  //Serial.println("Compiled bitch");
   // Wait 300ms
-  delay(300);
 }
 
 void setMotor(int pwmVal, bool leftMotor, bool forward)
@@ -56,12 +75,14 @@ void setMotor(int pwmVal, bool leftMotor, bool forward)
   } else if (forward && !leftMotor) { //right motor go forward
     digitalWrite(globals.rightFrontPin, HIGH);
     digitalWrite(globals.rightReversePin, LOW);
+    pwmVal = pwmVal*globals.corrFactor;
   } else if (!forward && leftMotor) { //left motor go backwards
     digitalWrite(globals.leftFrontPin, LOW);
     digitalWrite(globals.leftReversePin, HIGH);
   } else if (!forward && !leftMotor) { //right motor go backwards
     digitalWrite(globals.rightFrontPin, LOW);
     digitalWrite(globals.rightReversePin, HIGH);
+    pwmVal = pwmVal*globals.corrFactor;
   }
   int motor; 
   if (leftMotor)
