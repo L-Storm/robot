@@ -97,6 +97,8 @@ void setMotor(int pwmVal, bool leftMotor, bool forward)
 }
 
 void rotate(int speed, long time, char direction) {
+  //direction needs to be either 'L' or 'R' char input. 
+  //avoids the use of a delay function with a for loop. 
   bool left;
   unsigned long currentMillis = millis();
   static unsigned long previousMillis = 0; // Make previousMillis static to retain its value between function calls
