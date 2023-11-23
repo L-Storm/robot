@@ -4,7 +4,7 @@ class Globals{
   
   public:
     
-    //propulsion and motor pins - 
+    //propulsion and motor pins - left motor wire has tape
       byte rightFrontPin = 7; //A1 
       byte rightReversePin = 9; //A2 
       byte leftFrontPin = 11; //B1 
@@ -37,8 +37,9 @@ void setup()
 
 void loop()
 {
-  setMotor(50, true, true); // 255 max pin val. leftmotor is false forward is true 
-  //setMotor(50, false, true);
+  setMotor(100, false, false); // 255 max pin val. leftmotor is false forward is true
+  
+  setMotor(100, true, true);
   Serial.println("Compiled bitch");
   // Wait 300ms
   delay(300);
