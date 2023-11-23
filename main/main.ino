@@ -10,7 +10,7 @@ class Globals{
   
   public:
     
-    //propulsion and motor pins - left motor wire has tape
+    //propulsion and motor pins - 
       const byte rightFrontPin = 7; //A1 
       const byte rightReversePin = 9; //A2 
       const byte leftFrontPin = 11; //B1 
@@ -101,7 +101,6 @@ void rotate(int speed, long time, char direction) {
   //avoids the use of a delay function with a for loop. 
   bool left;
   unsigned long currentMillis = millis();
-  static unsigned long previousMillis = 0; // Make previousMillis static to retain its value between function calls
 
   if (direction == 'L') {
     left = true;
@@ -112,8 +111,9 @@ void rotate(int speed, long time, char direction) {
   // turn
   setMotor(speed, left, true);
   setMotor(speed, !left, false);
-  if (currentMillis - previousMillis > time) {
-    previousMillis = currentMillis; // Doesn't use delay
+  unsigned long initMillis = millis(); // Make previousMillis static to retain its value between function calls
+  if (currentMillis - initMillis > time) {
+    currentMillis = millis(); // Doesn't use delay
   }
   setMotor(0, true, true);
   setMotor(0, false, false);
