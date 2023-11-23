@@ -45,20 +45,10 @@ void setup()
 void loop()
 {
 
-  setMotor(150, true, false); // 255 max pin val. leftmotor is false forward is true 
-  setMotor(150, false, true);
-  delay(640);
-  setMotor(0, true, false); // 255 max pin val. leftmotor is false forward is true 
-  setMotor(0, false, true);
-  delay(2000);
-  setMotor(150, true, true); // 255 max pin val. leftmotor is false forward is true 
-  setMotor(150, false, true);
-  delay(2000);
-  setMotor(0, true, false); // 255 max pin val. leftmotor is false forward is true 
-  setMotor(0, false, true);
-
-
-
+  rotate(100,1000,'L');
+  delay(1000);
+  setMotor(0,true,true);
+  setMotor(0,false,false);
   //Serial.println("Compiled bitch");
   // Wait 300ms
 }
@@ -98,7 +88,6 @@ void setMotor(int pwmVal, bool leftMotor, bool forward)
 
 void rotate(int speed, long time, char direction) {
   //direction needs to be either 'L' or 'R' char input. 
-  //avoids the use of a delay function with a for loop. 
   bool left;
   unsigned long currentMillis = millis();
 
@@ -111,10 +100,7 @@ void rotate(int speed, long time, char direction) {
   // turn
   setMotor(speed, left, true);
   setMotor(speed, !left, false);
-  unsigned long initMillis = millis(); // Make previousMillis static to retain its value between function calls
-  if (currentMillis - initMillis > time) {
-    currentMillis = millis(); // Doesn't use delay
-  }
+  delay(time);
   setMotor(0, true, true);
   setMotor(0, false, false);
 }
