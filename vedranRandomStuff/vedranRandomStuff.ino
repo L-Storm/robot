@@ -1,16 +1,16 @@
-
+/*
 // defines pins numbers
-const byte trigPin = 12;
-const byte echoPin = 13;
-const byte powerPin = 11;
+const byte trigPin = 22;
+const byte echoPin = 23;
+
 // defines variables
 long duration;
 int distance;
 void setup() {
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
   pinMode(echoPin, INPUT); // Sets the echoPin as an Input
-  pinMode(powerPin, OUTPUT);
-  digitalWrite(powerPin, HIGH);
+
+
   Serial.begin(9600); // Starts the serial communication
 }
 void loop() {
@@ -29,4 +29,32 @@ void loop() {
   Serial.print("Distance: ");
   Serial.println(distance);
   delay(50);
+}
+*/
+
+
+// Define pin numbers for sensors and motors
+int sensorCentre = 28; //green
+int sensorLeft = 26; //yellow
+int sensorRight = 30; //blue
+
+void setup() {
+  // Initialize sensor pins as INPUT
+  pinMode(sensorCentre, INPUT);
+  pinMode(sensorRight, INPUT);
+  pinMode(sensorLeft, INPUT);
+  Serial.begin(9600);
+
+}
+
+void loop() {
+  // Read sensor values
+  Serial.print("Left: ");
+  Serial.print(digitalRead(sensorLeft));
+  Serial.print("  Centre: ");
+  Serial.print(digitalRead(sensorCentre));
+  Serial.print("  Right: ");
+  Serial.println(digitalRead(sensorRight));
+  
+
 }
