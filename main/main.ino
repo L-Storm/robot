@@ -10,7 +10,7 @@ class Globals{
   
   public:
     
-    //propulsion and motor pins - 
+    //propulsion and motor pins - left motor is marked with tape
       const byte rightFrontPin = 7; //A1 
       const byte rightReversePin = 9; //A2 
       const byte leftFrontPin = 11; //B1 
