@@ -1,5 +1,6 @@
 #include <Servo.h>
 #include <NewPing.h>
+#include <Encoder.h>
 //class for storing all globals cause its good practise
 //ONLY USE BYTE FOR PINS AND NOTHING ELSE
 class Globals{
@@ -23,15 +24,20 @@ class Globals{
       const byte middleServoPin = 7; 
       const byte topServoPin = 8;
       const byte flagServoPin = 9; 
-      const long rotate180 = 2520; 
-      const long rotate90 = 1260;
+      const byte encoderPinA = 18; //this the main guy.
+      const byte encoderPinB = 22; //less important just direction.
+      const long rotate180 = 2320; 
+      const long rotate90 = 1220;
       const long widthTime = 3230; //distance from x to line 
       const long echoOnLine = 1150;
-      const long echoToDrawingBoard = 1150;
-      const float corrFactor = 1.04; //increase for faster right motor       
+      const long echoToDrawingBoard = 999;
+      const long encoder180 = 4850; 
+      const long encoder90 = 2425;
+      const float corrFactor = 1.05; //increase for faster right motor       
 };
 Globals globals; //call the class 
 NewPing sonar(globals.frontTriggerPin, globals.frontEchoPin);
+Encoder wheel(globals.encoderPinA, globals.encoderPinB);
 
 Servo BottomServo;  // create servo object to control a servo
 Servo MiddleServo;
@@ -111,46 +117,59 @@ void loop() {
   delay(5000);
   FlagsServo.write(0);
   //TURN1: initial 180
-  rotate(100,globals.rotate180,'R'); //init rotate //2210 not good on full charge. 
-  
+  stopIfEncode(globals.encoder180, 'R');
+  Serial.print("encoder post turn1:");
+  Serial.println(wheel.read());  
+  delay(500);
   //FORWARD1: to line (no feedback in commented out function)
   //straight(150,globals.widthTime,'F'); //to line 
   stopIfEcho(globals.echoOnLine);
+  delay(500);
 
   //TURN2: turn face whiteboard
-  rotate(100,globals.rotate90,'L'); //turn to face bridge 
+  stopIfEncode(globals.encoder90, 'L');
+  //rotate(100,globals.rotate90,'L'); //turn to face bridge 
+  delay(500);
 
   //FORWARD2: move to whiteboard. 
   //straight(150,4000,'F'); //unsure if this time value is correct.
   stopIfEcho(globals.echoToDrawingBoard);
+  delay(500);
   //DELAY1: wait for drawing to finish. 
 
   armExtend(); 
   armSpin();
   armFold(); 
 
-  delay(2000); 
-
   //REVERSE1: move away from drawing board. 
   //straight(150,1000,'B'); // reverse 
+  //delay(500);
   
   //TURN3: turn to face red line.
-  rotate(100,globals.rotate90,'L'); 
+  stopIfEncode(globals.encoder90, 'L');
+  //rotate(100,globals.rotate90,'L'); 
+  delay(500);
 
   //FORWARD3: move towards bridge hole. 
   //straight(150,globals.widthTime,'F'); //to line 
   stopIfEcho(globals.echoOnLine);
+  delay(500);
 
   //TURN4: face starting position. 
-  rotate(100,globals.rotate90,'L'); //turn to face bridge 
+  stopIfEncode(globals.encoder90, 'L');
+  //rotate(100,globals.rotate90,'L'); //turn to face bridge 
+  delay(500);
   
   //FORWARD4 return to home position. 
   //straight(150,3200,'F'); //to x
   stopIfEcho(globals.echoOnLine);
+  delay(500);
 
 
   //TURN5: face away and return to starting position.
-  rotate(100,globals.rotate90,'R'); //turn to face bridge 
+  stopIfEncode(globals.encoder90, 'R');
+  //rotate(100,globals.rotate90,'R'); //turn to face bridge 
+  delay(500);
 
   //RAISE FLAGS:
   FlagsServo.write(180);
@@ -276,6 +295,30 @@ void armSpin(){
     }
     topPos = 50;
     TopServo.write(topPos);
-    delay(2000);
-    
+    delay(2000);    
+}
+
+void stopIfEncode(long encodeVal, char direction) {
+  //direction needs to be either 'L' or 'R' char input. 
+  bool left;
+  if (direction == 'L') {
+    left = true;
+  } else if (direction == 'R') {
+    left = false;
+  }
+
+  setMotor(100, true, !left); // Set both motors forward 
+  setMotor(100, false, left); // Set both
+
+  bool fin = false;
+  wheel.write(0);
+  while (!fin) {
+    if (abs(wheel.read()) >= encodeVal) {
+      setMotor(0, true, true); // Stop the motor in one direction
+      setMotor(0, false, true); // Stop the motor in the opposite direction
+      fin = true;
+      break;
+    }
+  }
+  wheel.write(0);
 }
